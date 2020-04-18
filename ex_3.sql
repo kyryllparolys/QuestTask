@@ -8,18 +8,21 @@
     create table tags(
         id serial primary key,
         name varchar(50) not null,
-        product_id integer not null,
-        foreign key(product_id) references products(id) on delete cascade
+    );
+
+    create table products_tags(
+        product_id int references products(id) on update cascade on delete cascade,
+        tag_id int references tags(id) on update cascade on delete cascade,
+        CONSTRAINT id PRIMARY KEY (product_id, tag_id)
     );
 
     SELECT
         products.id,
         products.name,
-        products.price,
-        tags.product_id
+        products.price
     FROM products
     INNER
-        JOIN tags
-        ON products.id = tags.product_id
-    GROUP by products.id, tags.product_id
-    HAVING COUNT(tags.product_id) > 10;
+        JOIN products_tags
+        ON products.id = products_tags.product_id
+    GROUP by products.id
+    HAVING COUNT(products.id) > 10;
